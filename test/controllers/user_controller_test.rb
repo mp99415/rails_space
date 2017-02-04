@@ -56,6 +56,32 @@ class UserControllerTest < ActionDispatch::IntegrationTest
     assert_template "login"
     assert_equal "Invalid screen name/password combination",flash[:notice]
     user = assigns :user
+    assert_equal invalid_user.screen_name,user.screen_name
+    assert_nil user.password
+  end
+
+  def test_login_failure_with_wrong_password
+    invalid_user = @valid_user
+    invalid_user.password+="baz"
+    try_to_login invalid_user
+    assert_template "login"
+    assert_equal "Invalid screen name/password combination",flash[:notice]
+    user= assigns :user
+    assert_equal invalid_user.screen_name,user.screen_name
+    assert_nil user.password
+  end
+
+  def test_logout
+    try_to_login @valid_user
+    assert_not_nil session[:user_id]
+    get "/user/logout"
+    assert_response :redirect
+    assert_redirected_to :action => "index",:controller => "site"
+    assert_equal "Logged Out", flash[:notice]
+    assert_nil session[:user_id]
+  end
+
+  def authorize(user)
 
   end
 

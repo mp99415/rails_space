@@ -14,10 +14,17 @@ class UserController < ApplicationController
         redirect_to :action=>"index"
       else
         @user.password=nil
-        flash[:notice] = "Invalid screen/password combination"
+        flash[:notice] = "Invalid screen name/password combination"
       end
     end
   end
+
+  def logout
+    session[:user_id] = nil
+    flash[:notice] = "Logged Out"
+    redirect_to :action=> "index",:controller => "site"
+  end
+
 
   def register
     @title = "Register"
