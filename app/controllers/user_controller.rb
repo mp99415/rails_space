@@ -1,5 +1,8 @@
 class UserController < ApplicationController
+  before_filter :protect,:only => :index
+
   def index
+    @title = "RailsSpace User Hub"
   end
 
   def login
@@ -38,4 +41,14 @@ class UserController < ApplicationController
       end
     end
   end
+
+  private
+  def protect
+    unless session[:user_id]
+      flash[:notice] = "Please log in first"
+      redirect_to :action=> "login"
+      return false
+    end
+  end
+
 end

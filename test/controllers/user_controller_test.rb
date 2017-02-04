@@ -4,8 +4,8 @@ class UserControllerTest < ActionDispatch::IntegrationTest
   fixtures :users
   def setup
     @controller = UserController.new
-    # @request = ActionController::TestRequest
-    # @response = ActionController::TestResponse
+    @request = ActionController::TestRequest
+    @response = ActionController::TestResponse
     @valid_user = users(:valid_user)
 
   end
@@ -82,7 +82,7 @@ class UserControllerTest < ActionDispatch::IntegrationTest
   end
 
   def authorize(user)
-
+    @request.session[:user_id] = user.id
   end
 
 end
