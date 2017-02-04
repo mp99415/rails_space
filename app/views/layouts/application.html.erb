@@ -9,7 +9,7 @@
   <div id="header">RailsSpace</div>
   <div id="nav">
     <span style="float:right">
-      <% if session[:user_id] -%>
+      <% if logged_in? -%>
           <%= nav_link "Hub","user","index" %> |
           <%= nav_link "Logout","user","logout" %>
       <% else -%>
@@ -38,6 +38,14 @@
       <fieldset id="session_debug_info" class="debug_info" >
           <legend>Session</legend>
           <%= debug(session) %>
+      </fieldset>
+      <fieldset id="env_debug_info" class="debug_info" >
+        <legend>Env</legend>
+        <%= debug(request.env) %>
+      </fieldset>
+      <fieldset id="request_debug_info" class="debug_info" >
+        <legend>Request</legend>
+        <%= debug(request) %>
       </fieldset>
     </div>
 

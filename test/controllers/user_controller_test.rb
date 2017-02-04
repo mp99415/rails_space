@@ -5,7 +5,7 @@ class UserControllerTest < ActionDispatch::IntegrationTest
   def setup
     @controller = UserController.new
     @request = ActionController::TestRequest
-    @response = ActionController::TestResponse
+    # @response = ActionController::TestResponse
     @valid_user = users(:valid_user)
 
   end
@@ -82,7 +82,43 @@ class UserControllerTest < ActionDispatch::IntegrationTest
   end
 
   def authorize(user)
-    @request.session[:user_id] = user.id
+    @request.new_session[:user_id] = user.id
+  end
+
+  def test_index_unauthorized
+    get "/user/index"
+    assert_response :redirect
+    assert_redirected_to :action=>"login"
+    assert_equal "Please log in first",flash[:notice]
+  end
+
+  def test_index_authorized
+    authorize @valid_user
+    get "/user/index"
+    assert_response :success
+    assert_template "index"
+  end
+
+  def test_login_friendly_url_forwarding
+    get "/user/index"
+    assert_response :redirect
+    assert_redirected_to :action=>"login"
+    try_to_login @valid_user
+    assert_response :redirect
+    assert_redirected_to :action=>"index"
+    assert_nil session[:protected_page]
+  end
+
+  def test_register_friendly_url_forwarding
+    get "/user/index"
+    assert_response :redirect
+    assert_redirected_to :action=>"login"
+    post "/user/register",params:{user:{screen_name:"new_screen_name",
+                                        email:"valid@example.com",
+                                        password:"long_enough_password"}}
+    assert_response :redirect
+    assert_redirected_to :action=>"index"
+    assert_nil session[:protected_page]
   end
 
 end
