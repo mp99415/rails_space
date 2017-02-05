@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170203082620) do
+ActiveRecord::Schema.define(version: 20170205052650) do
 
   create_table "sessions", force: :cascade do |t|
     t.string   "session_id", null: false
@@ -27,6 +27,7 @@ ActiveRecord::Schema.define(version: 20170203082620) do
     t.string   "password"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "authorization_token"
   end
 
 end

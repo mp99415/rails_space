@@ -32,12 +32,34 @@ class User < ApplicationRecord
     session[:user_id] = id
   end
 
-  def self.logout!(session)
+  def self.logout!(session,cookies)
     session[:user_id] = nil
+    cookies.delete(:authorization_token)
   end
 
   def clear_password!
     self.password = nil
   end
   attr_accessor :remember_me
+
+  def remember!(cookies)
+    cookie_expiration = 10.years.from_now
+    cookies[:remember_me] = {:value=>"1",:expires=>cookie_expiration}
+    self.authorization_token = unique_identifier
+    self.save!
+    cookies[:authorization_token]={
+        :value=>user.authorization_token,
+        :expires=>cookie_expiration
+    }
+  end
+
+  def forget!(cookies)
+    cookies.delete(:remember_me)
+    cookies.delete(:authorization_token)
+  end
+
+  private
+  def unique_identifier
+    Digest::SHA1.hexdigest("#{screen_name}:#{password}")
+  end
 end

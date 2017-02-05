@@ -16,8 +16,9 @@ class UserController < ApplicationController
       if user
         user.login!(session)
         if @user.remember_me == "1"
-          cookies[:remember_me] = {:value=>"1",
-                                   :expires=>10.years.from_now}
+          user.remember!(cookies)
+        else
+          user.forget!(cookies)
         end
         flash[:notice] = "User #{user.screen_name} logged in!"
         redirect_to_forwarding_url
@@ -29,7 +30,7 @@ class UserController < ApplicationController
   end
 
   def logout
-    User.logout!(session)
+    User.logout!(session,cookies)
     flash[:notice] = "Logged Out"
     redirect_to :action=> "index",:controller => "site"
   end
@@ -41,7 +42,7 @@ class UserController < ApplicationController
       params.permit!
       @user=User.new params[:user]
       if @user.save
-        user.login!(session)
+        @user.login!(session)
         flash[:notice] = "User #{@user.screen_name} created!"
         redirect_to_forwarding_url
       else

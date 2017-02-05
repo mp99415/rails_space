@@ -105,7 +105,11 @@
       <Position>5</Position>
       <DataType>DATETIME(0,-1)|12</DataType>
     </column>
-    <key id="31" parent="7">
+    <column id="31" parent="7" name="authorization_token">
+      <Position>6</Position>
+      <DataType>VARCHAR(0,-1)|12</DataType>
+    </column>
+    <key id="32" parent="7">
       <ColNames>id</ColNames>
       <Primary>1</Primary>
     </key>
